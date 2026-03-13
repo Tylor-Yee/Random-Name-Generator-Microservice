@@ -22,6 +22,10 @@ std::string* parse_name_file(int &size) {
 
 	size = std::stoi(input);
 
+	if (size == 0) {
+		return nullptr;
+	}
+
 	std::string* name_array = new std::string[size];
 
 	int i = 0;
@@ -46,6 +50,10 @@ std::string* parse_item_file(int &size) {
 
 	size = std::stoi(input);
 
+	if (size == 0) {
+		return nullptr;
+	}
+
 	std::string* item_array = new std::string[size];
 
 	int i = 0;
@@ -65,11 +73,9 @@ int main() {
 	
 	int name_size = 0;
 	int item_size = 0;
+	std::string error_string = "NULL";
 	std::string* name_array = parse_name_file(name_size);
 	std::string* item_array = parse_item_file(item_size);
-
-	std::cout << name_size << " " << item_size << std::endl;
-
 
 	std::ifstream message_file;
 
@@ -82,17 +88,24 @@ int main() {
 			message_file >> input;
 		}
 
-		message_file.close();
+		message_file.close();	
 
-		if (input == "RANDOMNAME") {
-			int random_num = rand() % name_size; 
+		if (input == "RANDOMNAME") {	
 			std::cout << "NAME" << std::endl;
-			send_value(name_array[random_num]);
-
+			if (name_array != nullptr) {
+				int random_num = rand() % name_size; 
+				send_value(name_array[random_num]);
+			} else {
+				send_value(error_string);
+			}
 		} else if (input == "RANDOMITEM") {
-			int random_num = rand() % item_size;
 			std::cout << "ITEM" << std::endl;
-			send_value(item_array[random_num]);
+			if (item_array != nullptr) {
+				int random_num = rand() % item_size;
+				send_value(item_array[random_num]);
+			} else {
+				send_value(error_string);
+			}
 		}
 	}
 
